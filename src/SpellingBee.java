@@ -46,41 +46,55 @@ public class SpellingBee {
     //  that will find the substrings recursively.
     public void generate() {
         // YOUR CODE HERE — Call your recursive method!
-        generateWords(letters);
+        generateWords("", letters);
     }
 
-    private void generateWords(String str) {
+    private void generateWords(String word, String str) {
+        words.add(word);
+        System.out.println("str: " + str);
+        System.out.println("word: " + word);
+
         if (str.length() == 0) {
             return;
         }
 
-        words.add(str);
+        for(int i = 0; i < str.length(); i++){
+            word += str.substring(i, i + 1);
+            str = str.substring(0, i) + str.substring(i + 1, str.length());
+            generateWords(word, str);
+        }
 
-        // Generate all substrings and add them to the list
+        /*
+        // Generates all substrings and adds them to the Arraylist
         for (int i = 0; i < str.length(); i++) {
-            for (int j = i + 1; j <= str.length(); j++) {
-                String substring = str.substring(i, j);
-                if (!words.contains(substring)) {
-                    words.add(substring);
-                    generateWords(substring);
+            for (int j = 1; j < str.length(); j++) {
+                if(i <= j){
+                    String sub = str.substring(i, j);
+                    if (!words.contains(sub)) {
+                        print(words);
+                        generateWords(sub);
+                    }
                 }
             }
         }
 
-        // Recurse on all substrings
-        for (int i = 0; i < str.length(); i++) {
-            String substring = str.substring(0, i) + str.substring(i + 1);
-            if (!words.contains(substring)) {
-                words.add(substring);
-                generateWords(substring);
-            }
-        }
-
+        // Creates and adds permutations
         for (int i = 0; i < str.length(); i++) {
             String permutation = str.substring(i, str.length()) + str.substring(0, i);
             if (!words.contains(permutation)) {
                 words.add(permutation);
+                print(words);
             }
+        }
+         */
+    }
+
+
+
+    private void print(ArrayList<String> words){
+        System.out.println("Words:");
+        for (String word : words){
+            System.out.println(word);
         }
     }
 
@@ -88,21 +102,50 @@ public class SpellingBee {
     //  that will find the substrings recursively.
     public void sort() {
         words = mergeSort(words, 0, words.size() - 1);
+        System.out.println();
+        print(words);
     }
 
-    private ArrayList mergeSort(ArrayList<String> words, int low, int high) {
+    private ArrayList<String> mergeSort(ArrayList<String> words, int low, int high) {
         if (low == high) {
             return words;
         }
 
         int mid = (low + high) / 2;
         // Recursively sort the left and right halves
-        mergeSort(words, low, mid);
-        mergeSort(words, mid + 1, high);
+        ArrayList<String> arr1 = mergeSort(words, low, mid);
+        ArrayList<String> arr2 = mergeSort(words, mid + 1, high);
 
         // Merge the sorted halves
-        return merge();
+        return merge(arr1, arr2);
+    }
 
+    private ArrayList<String> merge(ArrayList<String> arr1, ArrayList<String> arr2) {
+        int i = 0;
+        int j = 0;
+        ArrayList<String> sorted = new ArrayList<String>();
+
+        while (i < arr1.size() && j < arr2.size()) {
+            if (arr1.get(i).compareTo(arr2.get(j)) < 0) {
+                sorted.add(arr1.get(i));
+                i++;
+            }
+            else{
+                sorted.add(arr2.get(j));
+                j++;
+            }
+        }
+        while (i < arr1.size()) {
+            sorted.add(arr1.get(i));
+            i++;
+        }
+
+        while ( j < arr2.size()) {
+            sorted.add(arr2.get(j));
+            j++;
+        }
+
+        return sorted;
     }
 
     // Removes duplicates from the sorted list.
