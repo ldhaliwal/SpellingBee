@@ -1,6 +1,7 @@
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.Arrays;
 
 /**
  * Spelling Bee
@@ -45,12 +46,63 @@ public class SpellingBee {
     //  that will find the substrings recursively.
     public void generate() {
         // YOUR CODE HERE — Call your recursive method!
+        generateWords(letters);
+    }
+
+    private void generateWords(String str) {
+        if (str.length() == 0) {
+            return;
+        }
+
+        words.add(str);
+
+        // Generate all substrings and add them to the list
+        for (int i = 0; i < str.length(); i++) {
+            for (int j = i + 1; j <= str.length(); j++) {
+                String substring = str.substring(i, j);
+                if (!words.contains(substring)) {
+                    words.add(substring);
+                    generateWords(substring);
+                }
+            }
+        }
+
+        // Recurse on all substrings
+        for (int i = 0; i < str.length(); i++) {
+            String substring = str.substring(0, i) + str.substring(i + 1);
+            if (!words.contains(substring)) {
+                words.add(substring);
+                generateWords(substring);
+            }
+        }
+
+        for (int i = 0; i < str.length(); i++) {
+            String permutation = str.substring(i, str.length()) + str.substring(0, i);
+            if (!words.contains(permutation)) {
+                words.add(permutation);
+            }
+        }
     }
 
     // TODO: Apply mergesort to sort all words. Do this by calling ANOTHER method
     //  that will find the substrings recursively.
     public void sort() {
-        // YOUR CODE HERE
+        words = mergeSort(words, 0, words.size() - 1);
+    }
+
+    private ArrayList mergeSort(ArrayList<String> words, int low, int high) {
+        if (low == high) {
+            return words;
+        }
+
+        int mid = (low + high) / 2;
+        // Recursively sort the left and right halves
+        mergeSort(words, low, mid);
+        mergeSort(words, mid + 1, high);
+
+        // Merge the sorted halves
+        return merge();
+
     }
 
     // Removes duplicates from the sorted list.
@@ -69,6 +121,12 @@ public class SpellingBee {
     //  If it is not in the dictionary, remove it from words.
     public void checkWords() {
         // YOUR CODE HERE
+        for (int i = 0; i < words.size(); i++) {
+            if (Arrays.binarySearch(DICTIONARY, words.get(i)) < 0) {
+                words.remove(i);
+                i--;
+            }
+        }
     }
 
     // Prints all valid words to wordList.txt
