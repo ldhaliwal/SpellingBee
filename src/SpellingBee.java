@@ -50,46 +50,20 @@ public class SpellingBee {
     }
 
     private void generateWords(String word, String str) {
-        words.add(word);
-        System.out.println("str: " + str);
-        System.out.println("word: " + word);
-
         if (str.length() == 0) {
+            words.add(word);
             return;
         }
 
         for(int i = 0; i < str.length(); i++){
-            word += str.substring(i, i + 1);
-            str = str.substring(0, i) + str.substring(i + 1, str.length());
-            generateWords(word, str);
+            String newWord = word + str.substring(i, i + 1);
+            //word += str.substring(i, i + 1);
+            String newString = str.substring(0, i) + str.substring(i + 1, str.length());
+            //str = str.substring(0, i) + str.substring(i + 1, str.length());
+            words.add(word);
+            generateWords(newWord, newString);
         }
-
-        /*
-        // Generates all substrings and adds them to the Arraylist
-        for (int i = 0; i < str.length(); i++) {
-            for (int j = 1; j < str.length(); j++) {
-                if(i <= j){
-                    String sub = str.substring(i, j);
-                    if (!words.contains(sub)) {
-                        print(words);
-                        generateWords(sub);
-                    }
-                }
-            }
-        }
-
-        // Creates and adds permutations
-        for (int i = 0; i < str.length(); i++) {
-            String permutation = str.substring(i, str.length()) + str.substring(0, i);
-            if (!words.contains(permutation)) {
-                words.add(permutation);
-                print(words);
-            }
-        }
-         */
     }
-
-
 
     private void print(ArrayList<String> words){
         System.out.println("Words:");
