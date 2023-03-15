@@ -23,7 +23,7 @@ import java.util.Arrays;
  * It utilizes recursion to generate the strings, mergesort to sort them, and
  * binary search to find them in a dictionary.
  *
- * @author Zach Blick, [ADD YOUR NAME HERE]
+ * @author Zach Blick, Liliana Dhaliwal
  *
  * Written on March 5, 2023 for CS2 @ Menlo School
  *
@@ -38,7 +38,7 @@ public class SpellingBee {
 
     public SpellingBee(String letters) {
         this.letters = letters;
-        words = new ArrayList<String>();
+        words = new ArrayList<>();
     }
 
     // TODO: generate all possible substrings and permutations of the letters.
@@ -51,24 +51,19 @@ public class SpellingBee {
 
     private void generateWords(String word, String str) {
         if (str.length() == 0) {
-            words.add(word);
+            if(!word.equals("")){
+                words.add(word);
+            }
             return;
         }
 
         for(int i = 0; i < str.length(); i++){
-            String newWord = word + str.substring(i, i + 1);
-            //word += str.substring(i, i + 1);
-            String newString = str.substring(0, i) + str.substring(i + 1, str.length());
-            //str = str.substring(0, i) + str.substring(i + 1, str.length());
-            words.add(word);
+            String newWord = word + str.charAt(i);
+            String newString = str.substring(0, i) + str.substring(i + 1);
+            if(!word.equals("")){
+                words.add(word);
+            }
             generateWords(newWord, newString);
-        }
-    }
-
-    private void print(ArrayList<String> words){
-        System.out.println("Words:");
-        for (String word : words){
-            System.out.println(word);
         }
     }
 
@@ -76,8 +71,6 @@ public class SpellingBee {
     //  that will find the substrings recursively.
     public void sort() {
         words = mergeSort(words, 0, words.size() - 1);
-        System.out.println();
-        print(words);
     }
 
     private ArrayList<String> mergeSort(ArrayList<String> words, int low, int high) {
@@ -97,28 +90,31 @@ public class SpellingBee {
     private ArrayList<String> merge(ArrayList<String> arr1, ArrayList<String> arr2) {
         int i = 0;
         int j = 0;
-        ArrayList<String> sorted = new ArrayList<String>();
+        ArrayList<String> sorted = new ArrayList<>();
 
         while (i < arr1.size() && j < arr2.size()) {
             if (arr1.get(i).compareTo(arr2.get(j)) < 0) {
                 sorted.add(arr1.get(i));
-                i++;
+                arr1.remove(i);
+                //i++;
             }
             else{
                 sorted.add(arr2.get(j));
-                j++;
+                arr2.remove(j);
+                //j++;
             }
         }
         while (i < arr1.size()) {
             sorted.add(arr1.get(i));
-            i++;
+            arr1.remove(i);
+            //i++;
         }
 
         while ( j < arr2.size()) {
             sorted.add(arr2.get(j));
-            j++;
+            arr2.remove(j);
+            //j++;
         }
-
         return sorted;
     }
 
@@ -138,10 +134,23 @@ public class SpellingBee {
     //  If it is not in the dictionary, remove it from words.
     public void checkWords() {
         // YOUR CODE HERE
-        for (int i = 0; i < words.size(); i++) {
-            if (Arrays.binarySearch(DICTIONARY, words.get(i)) < 0) {
+        int i = 0;
+        int low = 0;
+        int high = words.size() - 1;
+
+        while (low <= high) {
+            int mid = (low + high) / 2;
+            if (DICTIONARY[mid].compareTo(words.get(i)) < 0) {
+                low = mid + 1;
+            } else if (DICTIONARY[mid].compareTo(words.get(i)) == 0) {
+                i++;
+                break;
+            } else {
+                high = mid - 1;
+            }
+            if (low > high) {
                 words.remove(i);
-                i--;
+                i++;
             }
         }
     }
