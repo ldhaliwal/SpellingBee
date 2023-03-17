@@ -58,11 +58,14 @@ public class SpellingBee {
         }
 
         for(int i = 0; i < str.length(); i++){
+            // Creates a new word and a new string
             String newWord = word + str.charAt(i);
             String newString = str.substring(0, i) + str.substring(i + 1);
+            // Only adds the new word if the String has values
             if(!word.equals("")){
                 words.add(word);
             }
+            // Recurses to generate all iterations of the words
             generateWords(newWord, newString);
         }
     }
@@ -70,20 +73,25 @@ public class SpellingBee {
     // TODO: Apply mergesort to sort all words. Do this by calling ANOTHER method
     //  that will find the substrings recursively.
     public void sort() {
+        // Calls the merge sort algorithm
         words = mergeSort(words, 0, words.size() - 1);
     }
 
     private ArrayList<String> mergeSort(ArrayList<String> words, int low, int high) {
+        // Checks if there is only one element left in the arraylist, adds it to a new arraylist, and returns it.
         if (low == high) {
-            return words;
+            ArrayList<String> arr = new ArrayList<>();
+            arr.add(words.get(low));
+            return arr;
         }
 
         int mid = (low + high) / 2;
-        // Recursively sort the left and right halves
+
+        // Recurses on both halves of the original arraylist
         ArrayList<String> arr1 = mergeSort(words, low, mid);
         ArrayList<String> arr2 = mergeSort(words, mid + 1, high);
 
-        // Merge the sorted halves
+        // Merges the sorted halves
         return merge(arr1, arr2);
     }
 
@@ -92,29 +100,27 @@ public class SpellingBee {
         int j = 0;
         ArrayList<String> sorted = new ArrayList<>();
 
+        // Iterates through both arraylists and adds elements in order to the new arraylist
         while (i < arr1.size() && j < arr2.size()) {
             if (arr1.get(i).compareTo(arr2.get(j)) < 0) {
                 sorted.add(arr1.get(i));
                 arr1.remove(i);
-                //i++;
             }
             else{
                 sorted.add(arr2.get(j));
                 arr2.remove(j);
-                //j++;
             }
         }
+        // Adds any leftover elements from whatever half has more elements
         while (i < arr1.size()) {
             sorted.add(arr1.get(i));
             arr1.remove(i);
-            //i++;
         }
-
         while ( j < arr2.size()) {
             sorted.add(arr2.get(j));
             arr2.remove(j);
-            //j++;
         }
+        // Returns the sorted arraylist
         return sorted;
     }
 
@@ -133,26 +139,38 @@ public class SpellingBee {
     // TODO: For each word in words, use binary search to see if it is in the dictionary.
     //  If it is not in the dictionary, remove it from words.
     public void checkWords() {
-        // YOUR CODE HERE
-        int i = 0;
-        int low = 0;
-        int high = words.size() - 1;
-
-        while (low <= high) {
-            int mid = (low + high) / 2;
-            if (DICTIONARY[mid].compareTo(words.get(i)) < 0) {
-                low = mid + 1;
-            } else if (DICTIONARY[mid].compareTo(words.get(i)) == 0) {
-                i++;
-                break;
-            } else {
-                high = mid - 1;
-            }
-            if (low > high) {
+        // Iterates through each element in words and checks it against the Dictionary
+        for(int i = 0; i < words.size(); i++){
+            if(!(found(words.get(i), 0, DICTIONARY_SIZE))){
+                // removes the word if it is not found in the Dictionary
                 words.remove(i);
-                i++;
+                i--;
             }
         }
+    }
+
+    public boolean found(String s, int low, int high){
+        //  Returns false if the word is not found
+        if(low > high){
+            return false;
+        }
+
+        int mid = (low + high) / 2;
+
+        // Returns true if the word is found
+        if (DICTIONARY[mid].equals(s)) {
+            return true;
+        }
+        // Changes low or high based on if the value of the word is higher or lower than
+        // the middle word in the section of the Dictionary being checked
+        else if (DICTIONARY[mid].compareTo(s) < 0) {
+            low = ++mid;
+        }
+        else if (DICTIONARY[mid].compareTo(s) > 0) {
+            high = --mid;
+        }
+
+        return found(s, low, high);
     }
 
     // Prints all valid words to wordList.txt
@@ -213,6 +231,7 @@ public class SpellingBee {
         sb.sort();
         sb.removeDuplicates();
         sb.checkWords();
+        System.out.println(sb.words);
         try {
             sb.printWords();
         } catch (IOException e) {
