@@ -1,6 +1,5 @@
-a
-ab
-ac
-ca
-cab
-cb
+i
+il
+ill
+illy
+lily

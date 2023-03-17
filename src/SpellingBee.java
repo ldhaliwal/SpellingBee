@@ -1,7 +1,6 @@
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Scanner;
-import java.util.Arrays;
 
 /**
  * Spelling Bee
@@ -41,9 +40,8 @@ public class SpellingBee {
         words = new ArrayList<>();
     }
 
-    // TODO: generate all possible substrings and permutations of the letters.
-    //  Store them all in the ArrayList words. Do this by calling ANOTHER method
-    //  that will find the substrings recursively.
+    // Generates all possible substrings and permutations of the letters.
+    // Stores them all in the ArrayList words.
     public void generate() {
         // YOUR CODE HERE — Call your recursive method!
         generateWords("", letters);
@@ -70,8 +68,7 @@ public class SpellingBee {
         }
     }
 
-    // TODO: Apply mergesort to sort all words. Do this by calling ANOTHER method
-    //  that will find the substrings recursively.
+    // Applies mergesort to sort all words.
     public void sort() {
         // Calls the merge sort algorithm
         words = mergeSort(words, 0, words.size() - 1);
@@ -136,8 +133,8 @@ public class SpellingBee {
         }
     }
 
-    // TODO: For each word in words, use binary search to see if it is in the dictionary.
-    //  If it is not in the dictionary, remove it from words.
+    // For each word, uses binary search to see if it is in the dictionary.
+    // If it is not in the dictionary, it's removed from words.
     public void checkWords() {
         // Iterates through each element in words and checks it against the Dictionary
         for(int i = 0; i < words.size(); i++){
@@ -170,6 +167,7 @@ public class SpellingBee {
             high = --mid;
         }
 
+        // Recurses on updated section of the Dictionary
         return found(s, low, high);
     }
 
@@ -231,7 +229,6 @@ public class SpellingBee {
         sb.sort();
         sb.removeDuplicates();
         sb.checkWords();
-        System.out.println(sb.words);
         try {
             sb.printWords();
         } catch (IOException e) {
